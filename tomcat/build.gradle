@@ -1,0 +1,9 @@
+managedDependencies {
+    // Tomcat
+    [ 'tomcat-embed-core', 'tomcat-embed-jasper', 'tomcat-embed-el' ].each {
+        compile "org.apache.tomcat.embed:$it"
+    }
+
+    // Replace commons-logging (Tomcat's logging API) with SLF4J.
+    runtime 'org.slf4j:jcl-over-slf4j'
+}
