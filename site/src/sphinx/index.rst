@@ -15,7 +15,6 @@
 
 .. _index:
 
-Hi~
 Welcome to Armeria
 ==================
 *Armeria* is an open-source asynchronous `HTTP/2`_ RPC/REST client/server library built on top of `Java 8`_,
