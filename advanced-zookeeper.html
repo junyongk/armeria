@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Service discovery with ZooKeeper &mdash; Armeria 0.50.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Armeria 0.50.0 documentation" href="index.html"/>
+        <link rel="up" title="Advanced topics" href="advanced.html"/>
+        <link rel="prev" title="Zipkin integration" href="advanced-zipkin.html"/>
+  <script src="_static/center_page.js"></script>
+   
+
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/armeria.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.50
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setting up a project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Writing a server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Writing a client</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="advanced.html">Advanced topics</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="advanced-logging.html">Logging contextual information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-structured-logging.html">Structured logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-structured-logging-kafka.html">Structured logging with Kafka</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-circuitbreaker.html">Circuit breakers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-retry.html">Automatic retry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-zipkin.html">Zipkin integration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Service discovery with ZooKeeper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#automatic-service-registration">Automatic service registration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/releases">Release notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="apidocs/index.html#://">API documentation</a></li>
+<li class="toctree-l1"><a class="reference external" href="xref/index.html#://">Source cross-reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/issues?q=label%3Aquestion-answered">Questions and answers</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria">Fork me at GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/blob/master/CONTRIBUTING.md">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Armeria</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="advanced.html">Advanced topics</a> &raquo;</li>
+        
+      <li>Service discovery with ZooKeeper</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/line/armeria/blob/master/site/src/sphinx/advanced-zookeeper.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="service-discovery-with-zookeeper">
+<span id="advanced-zookeeper"></span><h1>Service discovery with ZooKeeper<a class="headerlink" href="#service-discovery-with-zookeeper" title="Permalink to this headline">¶</a></h1>
+<p>You can put the list of available <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/client/Endpoint.html">Endpoints</a> into a zNode in <a class="reference external" href="https://zookeeper.apache.org/">Apache ZooKeeper</a> cluster, as a node tree or
+as a node value, like the following:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># (Recommended) When stored as a node tree:</span>
+<span class="c1"># Note: Only child node values are used. i.e. Child node names are ignored.</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/myProductionEndpoints</span>
+  <span class="l l-Scalar l-Scalar-Plain">- /192.168.1.10_8080</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">192.168.1.10:8080</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/192.168.1.11_8080</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">192.168.1.11:8080:100</span>
+
+<span class="c1"># When stored as a node value:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/myProductionEndpoints</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">192.168.1.10:8080,192.168.1.11:8080:100</span>
+</pre></div>
+</div>
+<p>In the examples above, <code class="docutils literal"><span class="pre">192.168.1.10</span></code> and other IP strings are your servers&#8217; IP addresses, <code class="docutils literal"><span class="pre">8080</span></code> is a
+service port number and <code class="docutils literal"><span class="pre">100</span></code> is a weight value. You can omit a weight value as it is optional.</p>
+<p>Create a <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/client/zookeeper/ZooKeeperEndpointGroup.html">ZooKeeperEndpointGroup</a> to retrieve this information:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.client.endpoint.EndpointGroup</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.client.zookeeper.ZooKeeperEndpointGroup</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.client.zookeeper.ZooKeeperEndpointGroup.Mode</span><span class="o">;</span>
+
+<span class="n">EndpointGroup</span> <span class="n">myEndpointGroup</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ZooKeeperEndpointGroup</span><span class="o">(</span>
+        <span class="cm">/* zkConnectionStr */</span> <span class="s">&quot;myZooKeeperHost:2181&quot;</span><span class="o">,</span>
+        <span class="cm">/* zNodePath       */</span> <span class="s">&quot;/myProductionEndpoints&quot;</span><span class="o">,</span>
+        <span class="cm">/* sessionTimeout  */</span> <span class="mi">10000</span><span class="o">,</span>
+        <span class="cm">/* mode            */</span> <span class="n">Mode</span><span class="o">.</span><span class="na">IN_CHILD_NODES</span> <span class="cm">/* or Mode.IN_NODE_VALUE */</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>And then register it to the <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/client/EndpointGroupRegistry.html">EndpointGroupRegistry</a>, and specify it in a client URI:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import static</span> <span class="nn">com.linecorp.armeria.client.endpoint.EndpointGroupRegistry</span><span class="o">;</span>
+<span class="kn">import static</span> <span class="nn">com.linecorp.armeria.client.endpoint.EndpointSelectionStrategy.WEIGHTED_ROUND_ROBIN</span><span class="o">;</span>
+
+<span class="n">EndpointGroupRegistry</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="s">&quot;myProductionGroup&quot;</span><span class="o">,</span> <span class="n">myEndpointGroup</span><span class="o">,</span> <span class="n">WEIGHTED_ROUND_ROBIN</span><span class="o">);</span>
+<span class="c1">// Specify &#39;group:&lt;groupName&gt;&#39; in the authority part of a client URI.</span>
+<span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span> <span class="n">helloClient</span> <span class="o">=</span> <span class="n">Clients</span><span class="o">.</span><span class="na">newClient</span><span class="o">(</span>
+        <span class="s">&quot;tbinary+http://group:myProductionGroup/hello&quot;</span><span class="o">,</span> <span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>For more information, please refer to the API documentation of the <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/client/zookeeper/package-summary.html">com.linecorp.armeria.client.zookeeper</a> package.</p>
+<div class="section" id="automatic-service-registration">
+<h2>Automatic service registration<a class="headerlink" href="#automatic-service-registration" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/zookeeper/ZooKeeperUpdatingListener.html">ZooKeeperUpdatingListener</a> to register your server to a ZooKeeper cluster:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.ServerListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.zookeeper.ZooKeeperUpdatingListener</span><span class="o">;</span>
+
+<span class="c1">// This constructor will use server&#39;s default host name, port and weight.</span>
+<span class="c1">// Use the other constructors to override the defaults.</span>
+<span class="n">ServerListener</span> <span class="n">listener</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ZooKeeperUpdatingListener</span><span class="o">(</span>
+        <span class="cm">/* zkConnectionStr */</span> <span class="s">&quot;myZooKeeperHost:2181&quot;</span><span class="o">,</span>
+        <span class="cm">/* zNode           */</span> <span class="s">&quot;/myProductionEndpoints&quot;</span><span class="o">,</span>
+        <span class="cm">/* sessionTimeout  */</span> <span class="mi">10000</span><span class="o">);</span>
+<span class="n">server</span><span class="o">.</span><span class="na">addListener</span><span class="o">(</span><span class="n">listener</span><span class="o">);</span>
+<span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>When your server starts up, <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/zookeeper/ZooKeeperUpdatingListener.html">ZooKeeperUpdatingListener</a> will register the server automatically to the
+specified zNode as a member of the cluster. Each server will represent itself as <a class="reference external" href="http://zookeeper.apache.org/doc/r3.4.10/zookeeperOver.html#Nodes+and+ephemeral+nodes">an EPHEMERAL node</a>, which
+means when a server stops or a network partition between your server and ZooKeeper cluster occurs, the node of
+the server that became unreachable will be deleted automatically by ZooKeeper. As a result, the clients that
+use a <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/client/zookeeper/ZooKeeperEndpointGroup.html">ZooKeeperEndpointGroup</a> will be notified and they will update their endpoint list automatically so that
+they do not attempt to connect to the unreachable servers.</p>
+<p>For more information, please refer to the API documentation of the <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/zookeeper/package-summary.html">com.linecorp.armeria.server.zookeeper</a> package.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="advanced-zipkin.html" class="btn btn-neutral" title="Zipkin integration" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, LINE Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.50.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+  <div class="github-fork-ribbon-wrapper right">
+    <div class="github-fork-ribbon">
+      <a href="https://github.com/line/armeria">Fork me at GitHub</a>
+    </div>
+  </div>
+  <script type="text/javascript" src="_static/add_badges.js"></script>
+   
+
+
+</body>
+</html>

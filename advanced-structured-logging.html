@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Structured logging &mdash; Armeria 0.50.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Armeria 0.50.0 documentation" href="index.html"/>
+        <link rel="up" title="Advanced topics" href="advanced.html"/>
+        <link rel="next" title="Structured logging with Kafka" href="advanced-structured-logging-kafka.html"/>
+        <link rel="prev" title="Logging contextual information" href="advanced-logging.html"/>
+  <script src="_static/center_page.js"></script>
+   
+
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/armeria.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.50
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setting up a project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Writing a server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Writing a client</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="advanced.html">Advanced topics</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="advanced-logging.html">Logging contextual information</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Structured logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-properties-can-be-retrieved">What properties can be retrieved?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#availability-of-properties">Availability of properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#set-serializationformat-and-requestcontent-early-if-possible">Set <code class="docutils literal"><span class="pre">serializationFormat</span></code> and <code class="docutils literal"><span class="pre">requestContent</span></code> early if possible</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-structured-logging-kafka.html">Structured logging with Kafka</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-circuitbreaker.html">Circuit breakers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-retry.html">Automatic retry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-zipkin.html">Zipkin integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced-zookeeper.html">Service discovery with ZooKeeper</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/releases">Release notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="apidocs/index.html#://">API documentation</a></li>
+<li class="toctree-l1"><a class="reference external" href="xref/index.html#://">Source cross-reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/issues?q=label%3Aquestion-answered">Questions and answers</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria">Fork me at GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/blob/master/CONTRIBUTING.md">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Armeria</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="advanced.html">Advanced topics</a> &raquo;</li>
+        
+      <li>Structured logging</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/line/armeria/blob/master/site/src/sphinx/advanced-structured-logging.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="structured-logging">
+<span id="advanced-structured-logging"></span><h1>Structured logging<a class="headerlink" href="#structured-logging" title="Permalink to this headline">¶</a></h1>
+<p>Although traditional logging is a useful tool to diagnose the behavior of an application, it has its own
+problem; the resulting log messages are not always machine-friendly. This section explains the Armeria API for
+retrieving the information collected during request life cycle in a machine-friendly way.</p>
+<div class="section" id="what-properties-can-be-retrieved">
+<h2>What properties can be retrieved?<a class="headerlink" href="#what-properties-can-be-retrieved" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="apidocs/index.html?com/linecorp/armeria/common/logging/RequestLog.html">RequestLog</a> provides all the properties you can retrieve:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">Request properties</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">requestStartTimeMillis</span></code></td>
+<td>when the request processing started</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">requestDurationNanos</span></code></td>
+<td>the duration took to process the request completely</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">requestLength</span></code></td>
+<td>the byte length of the request content</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">requestCause</span></code></td>
+<td>the cause of request processing failure (if any)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sessionProtocol</span></code></td>
+<td>the protocol of the connection (e.g. <code class="docutils literal"><span class="pre">H2C</span></code>)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">serializationFormat</span></code></td>
+<td>the serialization format of the content (e.g. <code class="docutils literal"><span class="pre">tbinary</span></code>, <code class="docutils literal"><span class="pre">none</span></code>)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">host</span></code></td>
+<td>the name of the virtual host that serves the request</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">method</span></code></td>
+<td>the method of the request (e.g. <code class="docutils literal"><span class="pre">GET</span></code>, <code class="docutils literal"><span class="pre">POST</span></code>)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">path</span></code></td>
+<td>the path of the request (e.g. <code class="docutils literal"><span class="pre">/thrift/foo</span></code>)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">query</span></code></td>
+<td>the query of the request (e.g. <code class="docutils literal"><span class="pre">foo=bar&amp;bar=baz</span></code>)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">requestEnvelope</span></code></td>
+<td>the protocol-dependent envelope object of the request.
+<code class="docutils literal"><span class="pre">HttpHeaders</span></code> for HTTP.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">requestContent</span></code></td>
+<td>the serialization-dependent content object of the request.
+<code class="docutils literal"><span class="pre">ThriftCall</span></code> for Thrift. <code class="docutils literal"><span class="pre">null</span></code> otherwise.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="2">Response properties</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">responseStartTimeMillis</span></code></td>
+<td>when the response processing started</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">responseDurationNanos</span></code></td>
+<td>the duration took to process the response completely</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">responseLength</span></code></td>
+<td>the byte length of the response content</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">responseCause</span></code></td>
+<td>the cause of response processing failure (if any)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">totalDurationNanos</span></code></td>
+<td>the duration between the request start and the response end
+(i.e. response time)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">statusCode</span></code></td>
+<td>the integer status code (e.g. 404)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">responseEnvelope</span></code></td>
+<td>the protocol-dependent envelope object of the response.
+<code class="docutils literal"><span class="pre">HttpHeaders</span></code> for HTTP.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">responseContent</span></code></td>
+<td>the serialization-dependent content object of the response.
+<code class="docutils literal"><span class="pre">ThriftReply</span></code> for Thrift. <code class="docutils literal"><span class="pre">null</span></code> otherwise.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="availability-of-properties">
+<h2>Availability of properties<a class="headerlink" href="#availability-of-properties" title="Permalink to this headline">¶</a></h2>
+<p>Armeria handles requests and responses in a stream-oriented way, which means that some properties are revealed
+only after the streams are processed to some point. For example, there&#8217;s no way to know the <code class="docutils literal"><span class="pre">requestLength</span></code>
+until the request processing ends. Also, some properties related to the (de)serialization of request content,
+such as <code class="docutils literal"><span class="pre">serializationFormat</span></code> and <code class="docutils literal"><span class="pre">requestContent</span></code>, will not be available when request processing just
+started.</p>
+<p>To get notified when a certain set of properties are available, you can add a listener to a <code class="docutils literal"><span class="pre">RequestLog</span></code>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.logging.RequestLog</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.logging.RequestLogAvailability</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.ServiceRequestContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.AbstractHttpService</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyService</span> <span class="kd">extends</span> <span class="n">AbstractHttpService</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">HttpResponse</span> <span class="nf">serve</span><span class="o">(</span><span class="n">ServiceRequestContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">HttpRequest</span> <span class="n">req</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">RequestLog</span> <span class="n">log</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">log</span><span class="o">();</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="na">addListener</span><span class="o">(</span><span class="n">log</span> <span class="o">-&gt;</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Handled a request: &quot;</span> <span class="o">+</span> <span class="n">log</span><span class="o">);</span>
+        <span class="o">},</span> <span class="n">RequestLogAvailability</span><span class="o">.</span><span class="na">COMPLETE</span><span class="o">);</span>
+
+        <span class="k">return</span> <span class="kd">super</span><span class="o">.</span><span class="na">serve</span><span class="o">(</span><span class="n">ctx</span><span class="o">,</span> <span class="n">req</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Note that <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/common/logging/RequestLogAvailability.html">RequestLogAvailability</a> is specified when adding a listener. <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/common/logging/RequestLogAvailability.html">RequestLogAvailability</a> is an enum
+that is used to express which <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/common/logging/RequestLog.html">RequestLog</a> properties you are interested in. <code class="docutils literal"><span class="pre">COMPLETE</span></code> will make your
+listener invoked when all properties are available.</p>
+</div>
+<div class="section" id="set-serializationformat-and-requestcontent-early-if-possible">
+<h2>Set <code class="docutils literal"><span class="pre">serializationFormat</span></code> and <code class="docutils literal"><span class="pre">requestContent</span></code> early if possible<a class="headerlink" href="#set-serializationformat-and-requestcontent-early-if-possible" title="Permalink to this headline">¶</a></h2>
+<p>Armeria depends on the <code class="docutils literal"><span class="pre">serializationFormat</span></code> and <code class="docutils literal"><span class="pre">requestContent</span></code> property to determine whether a request
+is an RPC and what the method name of the call is. If you are sure the request you handle is not an RPC, set
+the <code class="docutils literal"><span class="pre">serializationFormat</span></code> and <code class="docutils literal"><span class="pre">requestContent</span></code> property explicitly to <code class="docutils literal"><span class="pre">NONE</span></code> and <code class="docutils literal"><span class="pre">null</span></code> so that Armeria
+and other log listeners get the information sooner:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.SerializationFormat</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.ServiceRequestContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.HttpService</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyService</span> <span class="kd">implements</span> <span class="n">HttpService</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">HttpResponse</span> <span class="nf">serve</span><span class="o">(</span><span class="n">ServiceRequestContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">HttpRequest</span> <span class="n">req</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="na">logBuilder</span><span class="o">().</span><span class="na">serializationFormat</span><span class="o">(</span><span class="n">SerializationFormat</span><span class="o">.</span><span class="na">NONE</span><span class="o">);</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="na">logBuilder</span><span class="o">().</span><span class="na">requestContent</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+        <span class="o">...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Consider using <code class="docutils literal"><span class="pre">AbstractHttpService</span></code> which sets the <code class="docutils literal"><span class="pre">serializationFormat</span></code> and <code class="docutils literal"><span class="pre">requestContent</span></code>
+automatically for you:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpResponseWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.thrift.ThriftSerializationFormats</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.AbstractHttpService</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyService</span> <span class="n">extenda</span> <span class="n">AbstractHttpService</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">ServiceRequestContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">HttpRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpResponseWriter</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// serializationFormat and requestContent will be set to NONE and null</span>
+        <span class="c1">// automatically when this method returns.</span>
+        <span class="o">...</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doPost</span><span class="o">(</span><span class="n">ServiceRequestContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">HttpRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpResponseWriter</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Set serializationFormat explicitly.</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="na">logBuilder</span><span class="o">().</span><span class="na">serializationFormat</span><span class="o">(</span><span class="n">ThriftSerializationFormats</span><span class="o">.</span><span class="na">BINARY</span><span class="o">);</span>
+        <span class="c1">// This will prevent AbstractHttpService from setting requestContent to null</span>
+        <span class="c1">// automatically. You should call RequestLogBuilder.requestContent(...) later</span>
+        <span class="c1">// when the content is determined.</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="na">logBuilder</span><span class="o">().</span><span class="na">deferRequestContent</span><span class="o">();</span>
+        <span class="c1">// Alternatively, you can set requestContent right here:</span>
+        <span class="c1">// ctx.logBuilder().requestContent(...);</span>
+        <span class="o">...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="advanced-structured-logging-kafka.html" class="btn btn-neutral float-right" title="Structured logging with Kafka" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="advanced-logging.html" class="btn btn-neutral" title="Logging contextual information" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, LINE Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.50.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+  <div class="github-fork-ribbon-wrapper right">
+    <div class="github-fork-ribbon">
+      <a href="https://github.com/line/armeria">Fork me at GitHub</a>
+    </div>
+  </div>
+  <script type="text/javascript" src="_static/add_badges.js"></script>
+   
+
+
+</body>
+</html>

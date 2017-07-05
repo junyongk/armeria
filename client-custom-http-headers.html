@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Sending custom HTTP headers &mdash; Armeria 0.50.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Armeria 0.50.0 documentation" href="index.html"/>
+        <link rel="up" title="Writing a client" href="client.html"/>
+        <link rel="next" title="Advanced topics" href="advanced.html"/>
+        <link rel="prev" title="Decorating a client" href="client-decorator.html"/>
+  <script src="_static/center_page.js"></script>
+   
+
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/armeria.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.50
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setting up a project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Writing a server</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="client.html">Writing a client</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="client-http.html">Calling an HTTP service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client-retrofit.html">Retrofit integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client-thrift.html">Calling a Thrift service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client-grpc.html">Calling a gRPC service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client-decorator.html">Decorating a client</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sending custom HTTP headers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-clients-withhttpheaders">Using <code class="docutils literal"><span class="pre">Clients.withHttpHeaders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-clientoption-http-headers">Using <code class="docutils literal"><span class="pre">ClientOption.HTTP_HEADERS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-clientbuilder-decorator">Using <code class="docutils literal"><span class="pre">ClientBuilder.decorator()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-a-derived-client">Using a derived client</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/releases">Release notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="apidocs/index.html#://">API documentation</a></li>
+<li class="toctree-l1"><a class="reference external" href="xref/index.html#://">Source cross-reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/issues?q=label%3Aquestion-answered">Questions and answers</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria">Fork me at GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/blob/master/CONTRIBUTING.md">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Armeria</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="client.html">Writing a client</a> &raquo;</li>
+        
+      <li>Sending custom HTTP headers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/line/armeria/blob/master/site/src/sphinx/client-custom-http-headers.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sending-custom-http-headers">
+<span id="client-custom-http-headers"></span><h1>Sending custom HTTP headers<a class="headerlink" href="#sending-custom-http-headers" title="Permalink to this headline">¶</a></h1>
+<p>When send an RPC request, it is sometimes required to send HTTP headers with it, such as authentication token.
+There are four ways to customize the HTTP headers of your RPC request:</p>
+<ul class="simple">
+<li>Using the <code class="docutils literal"><span class="pre">Clients.withHttpHeaders()</span></code> method</li>
+<li>Using the <code class="docutils literal"><span class="pre">ClientOption.HTTP_HEADERS</span></code> option</li>
+<li>Using the <code class="docutils literal"><span class="pre">ClientBuilder.decorator()</span></code> method</li>
+<li>Using a derived client</li>
+</ul>
+<div class="section" id="using-clients-withhttpheaders">
+<h2>Using <code class="docutils literal"><span class="pre">Clients.withHttpHeaders()</span></code><a class="headerlink" href="#using-clients-withhttpheaders" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import static</span> <span class="nn">com.linecorp.armeria.common.HttpHeaderNames.AUTHORIZATION</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.util.SafeCloseable</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.client.Clients</span><span class="o">;</span>
+
+<span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span> <span class="n">client</span> <span class="o">=</span> <span class="n">Clients</span><span class="o">.</span><span class="na">newClient</span><span class="o">(</span><span class="s">&quot;tbinary+http://example.com/hello&quot;</span><span class="o">,</span>
+                                               <span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="k">try</span> <span class="o">(</span><span class="n">SafeCloseable</span> <span class="n">ignored</span> <span class="o">=</span> <span class="n">Clients</span><span class="o">.</span><span class="na">withHttpHeaders</span><span class="o">(</span>
+        <span class="n">headers</span> <span class="o">-&gt;</span> <span class="n">headers</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">AUTHORIZATION</span><span class="o">,</span> <span class="n">credential</span><span class="o">)))</span> <span class="o">{</span>
+    <span class="n">client</span><span class="o">.</span><span class="na">hello</span><span class="o">(</span><span class="s">&quot;authorized personnel&quot;</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>If you are setting only a single header, you can use <code class="docutils literal"><span class="pre">Clients.withHttpHeader()</span></code> simply:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="k">try</span> <span class="o">(</span><span class="n">SafeCloseable</span> <span class="n">ignored</span> <span class="o">=</span> <span class="n">Clients</span><span class="o">.</span><span class="na">withHttpHeader</span><span class="o">(</span><span class="n">AUTHORIZATION</span><span class="o">,</span> <span class="n">credential</span><span class="o">))</span> <span class="o">{</span>
+    <span class="n">client</span><span class="o">.</span><span class="na">hello</span><span class="o">(</span><span class="s">&quot;authorized personnel&quot;</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>You can also nest <code class="docutils literal"><span class="pre">withHttpHeader(s)</span></code>. The following example will send both <code class="docutils literal"><span class="pre">user-agent</span></code> header and
+<code class="docutils literal"><span class="pre">authorization</span></code> header when calling <code class="docutils literal"><span class="pre">client.hello()</span></code>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import static</span> <span class="nn">com.linecorp.armeria.common.HttpHeaderNames.USER_AGENT</span><span class="o">;</span>
+
+<span class="k">try</span> <span class="o">(</span><span class="n">SafeClosedble</span> <span class="n">ignored1</span> <span class="o">=</span> <span class="n">Clients</span><span class="o">.</span><span class="na">withHttpHeader</span><span class="o">(</span><span class="n">USER_AGENT</span><span class="o">,</span> <span class="n">myUserAgent</span><span class="o">))</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">cred</span> <span class="o">:</span> <span class="n">credentials</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">(</span><span class="n">SafeCloseable</span> <span class="n">ignored2</span> <span class="o">=</span> <span class="n">Clients</span><span class="o">.</span><span class="na">withHttpHeaders</span><span class="o">(</span><span class="n">AUTHORIZATION</span><span class="o">,</span> <span class="n">cred</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">client</span><span class="o">.</span><span class="na">hello</span><span class="o">(</span><span class="s">&quot;authorized personnel&quot;</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-clientoption-http-headers">
+<h2>Using <code class="docutils literal"><span class="pre">ClientOption.HTTP_HEADERS</span></code><a class="headerlink" href="#using-clientoption-http-headers" title="Permalink to this headline">¶</a></h2>
+<p>If you have a custom HTTP header whose value does not change often, you can use <code class="docutils literal"><span class="pre">ClientOption.HTTP_HEADERS</span></code>
+which is more efficient:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import static</span> <span class="nn">com.linecorp.armeria.common.HttpHeaderNames.AUTHORIZATION</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpHeaders</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.client.ClientBuilder</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.client.ClientOption</span><span class="o">;</span>
+
+<span class="n">ClientBuilder</span> <span class="n">cb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClientBuilder</span><span class="o">(</span><span class="s">&quot;tbinary+http://example.com/hello&quot;</span><span class="o">);</span>
+<span class="n">cb</span><span class="o">.</span><span class="na">setHttpHeader</span><span class="o">(</span><span class="n">AUTHORIZATION</span><span class="o">,</span> <span class="n">credential</span><span class="o">);</span>
+<span class="c1">// or:</span>
+<span class="c1">// cb.option(ClientOption.HTTP_HEADERS, HttpHeaders.of(AUTHORIZATION, credential));</span>
+<span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span> <span class="n">client</span> <span class="o">=</span> <span class="n">cb</span><span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">client</span><span class="o">.</span><span class="na">hello</span><span class="o">(</span><span class="s">&quot;authorized personnel&quot;</span><span class="o">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-clientbuilder-decorator">
+<h2>Using <code class="docutils literal"><span class="pre">ClientBuilder.decorator()</span></code><a class="headerlink" href="#using-clientbuilder-decorator" title="Permalink to this headline">¶</a></h2>
+<p>If you want more freedom on how you manipulate the request headers, use a decorator:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">ClientBuilder</span> <span class="n">cb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClientBuilder</span><span class="o">(</span><span class="s">&quot;tbinary+http://example.com/hello&quot;</span><span class="o">);</span>
+
+<span class="c1">// Add a decorator that inserts the custom header.</span>
+<span class="n">cb</span><span class="o">.</span><span class="na">decorator</span><span class="o">(</span><span class="n">HttpRequest</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">HttpResponse</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+             <span class="o">(</span><span class="n">delegate</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">req</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span> <span class="c1">// See DecoratingClientFunction.</span>
+                 <span class="n">req</span><span class="o">.</span><span class="na">headers</span><span class="o">().</span><span class="na">set</span><span class="o">(</span><span class="n">AUTHORIZATION</span><span class="o">,</span> <span class="n">credential</span><span class="o">);</span>
+                 <span class="k">return</span> <span class="n">delegate</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">ctx</span><span class="o">,</span> <span class="n">req</span><span class="o">);</span>
+             <span class="o">});</span>
+
+<span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span> <span class="n">client</span> <span class="o">=</span> <span class="n">cb</span><span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">client</span><span class="o">.</span><span class="na">hello</span><span class="o">(</span><span class="s">&quot;authorized personnel&quot;</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Note that this method is as efficient as the <code class="docutils literal"><span class="pre">ClientOption.HTTP_HEADERS</span></code> option. Choose whichever you prefer.</p>
+</div>
+<div class="section" id="using-a-derived-client">
+<h2>Using a derived client<a class="headerlink" href="#using-a-derived-client" title="Permalink to this headline">¶</a></h2>
+<p>Although not as simple as using <code class="docutils literal"><span class="pre">withHttpHeaders()</span></code>, you can create a derived client to add more custom
+headers to an existing client:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.client.ClientOptionsBuilder</span><span class="o">;</span>
+
+<span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span> <span class="n">client</span> <span class="o">=</span> <span class="o">...;</span>
+<span class="n">HelloService</span><span class="o">.</span><span class="na">Iface</span> <span class="n">derivedClient</span> <span class="o">=</span> <span class="n">Clients</span><span class="o">.</span><span class="na">newDerivedClient</span><span class="o">(</span><span class="n">client</span><span class="o">,</span> <span class="n">options</span> <span class="o">-&gt;</span> <span class="o">{</span>
+    <span class="n">ClientOptionsBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClientOptionsBuilder</span><span class="o">(</span><span class="n">options</span><span class="o">);</span>
+    <span class="n">builder</span><span class="o">.</span><span class="na">decorator</span><span class="o">(...);</span>  <span class="c1">// Add a decorator.</span>
+    <span class="n">builder</span><span class="o">.</span><span class="na">httpHeader</span><span class="o">(</span><span class="n">AUTHORIZATION</span><span class="o">,</span> <span class="n">credential</span><span class="o">);</span> <span class="c1">// Add an HTTP header.</span>
+    <span class="k">return</span> <span class="n">builder</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="o">});</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="advanced.html" class="btn btn-neutral float-right" title="Advanced topics" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="client-decorator.html" class="btn btn-neutral" title="Decorating a client" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, LINE Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.50.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+  <div class="github-fork-ribbon-wrapper right">
+    <div class="github-fork-ribbon">
+      <a href="https://github.com/line/armeria">Fork me at GitHub</a>
+    </div>
+  </div>
+  <script type="text/javascript" src="_static/add_badges.js"></script>
+   
+
+
+</body>
+</html>

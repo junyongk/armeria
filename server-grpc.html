@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Running a gRPC service &mdash; Armeria 0.50.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Armeria 0.50.0 documentation" href="index.html"/>
+        <link rel="up" title="Writing a server" href="server.html"/>
+        <link rel="next" title="Running a Thrift service" href="server-thrift.html"/>
+        <link rel="prev" title="Decorating a service" href="server-decorator.html"/>
+  <script src="_static/center_page.js"></script>
+   
+
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/armeria.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.50
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setting up a project</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="server.html">Writing a server</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="server-basics.html">Server basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-decorator.html">Decorating a service</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Running a gRPC service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1"><code class="docutils literal"><span class="pre">GrpcService</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2"><code class="docutils literal"><span class="pre">gRPC-Web</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unframed-requests">Unframed requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#blocking-service-implementation">Blocking service implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="server-thrift.html">Running a Thrift service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-docservice.html">Browsing and invoking services with <code class="docutils literal"><span class="pre">DocService</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-rest.html">Running a REST service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-http-file.html">Serving static files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-servlet.html">Embedding a servlet container</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Writing a client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/releases">Release notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="apidocs/index.html#://">API documentation</a></li>
+<li class="toctree-l1"><a class="reference external" href="xref/index.html#://">Source cross-reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/issues?q=label%3Aquestion-answered">Questions and answers</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria">Fork me at GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/blob/master/CONTRIBUTING.md">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Armeria</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="server.html">Writing a server</a> &raquo;</li>
+        
+      <li>Running a gRPC service</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/line/armeria/blob/master/site/src/sphinx/server-grpc.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="running-a-grpc-service">
+<span id="server-grpc"></span><h1>Running a gRPC service<a class="headerlink" href="#running-a-grpc-service" title="Permalink to this headline">¶</a></h1>
+<p>Let&#8217;s assume we have the following <a class="reference external" href="http://www.grpc.io/">gRPC</a> service definition:</p>
+<div class="highlight-protobuf"><div class="highlight"><pre><span></span><span class="na">syntax</span> <span class="o">=</span> <span class="s">&quot;proto3&quot;</span><span class="p">;</span>
+
+<span class="kn">package</span> <span class="nn">grpc</span><span class="o">.</span><span class="n">hello</span><span class="p">;</span>
+
+<span class="k">option</span> <span class="na">java_package</span> <span class="o">=</span> <span class="s">&quot;com.example.grpc.hello&quot;</span><span class="p">;</span>
+
+<span class="kd">service</span> <span class="n">HelloService</span> <span class="p">{</span>
+  <span class="k">rpc</span> <span class="n">Hello</span> <span class="p">(</span><span class="n">HelloRequest</span><span class="p">)</span> <span class="k">returns</span> <span class="p">(</span><span class="n">HelloReply</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="kd">message</span> <span class="nc">HelloRequest</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="na">name</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">message</span> <span class="nc">HelloReply</span> <span class="p">{</span>
+  <span class="kt">string</span> <span class="kd">message</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The Protobuf compiler will produce some Java code under the <code class="docutils literal"><span class="pre">com.example.grpc.hello</span></code> package.
+The most noteworthy one is <code class="docutils literal"><span class="pre">HelloServiceGrpc.java</span></code> which defines the base service class we will implement:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloServiceGrpc</span> <span class="o">{</span>
+    <span class="o">...</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">HelloServiceImplBase</span> <span class="kd">implements</span> <span class="n">BindableService</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">hello</span><span class="o">(</span><span class="n">HelloRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">StreamObserver</span><span class="o">&lt;</span><span class="n">HelloReply</span><span class="o">&gt;</span> <span class="n">responseObserver</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">asyncUnimplementedUnaryCall</span><span class="o">(</span><span class="n">METHOD_HELLO</span><span class="o">,</span> <span class="n">responseObserver</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="o">...</span>
+    <span class="o">}</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Our implementation would look like the following:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyHelloService</span> <span class="kd">extends</span> <span class="n">HelloServiceGrpc</span><span class="o">.</span><span class="na">HelloServiceImplBase</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">hello</span><span class="o">(</span><span class="n">HelloRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">StreamObserver</span><span class="o">&lt;</span><span class="n">HelloReply</span><span class="o">&gt;</span> <span class="n">responseObserver</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">HelloReply</span> <span class="n">reply</span> <span class="o">=</span> <span class="n">HelloReply</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+                                     <span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">&quot;Hello, &quot;</span> <span class="o">+</span> <span class="n">req</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="sc">&#39;!&#39;</span><span class="o">)</span>
+                                     <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+        <span class="n">responseObserver</span><span class="o">.</span><span class="na">onNext</span><span class="o">(</span><span class="n">reply</span><span class="o">);</span>
+        <span class="n">responseObserver</span><span class="o">.</span><span class="na">onCompleted</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="section" id="id1">
+<h2><code class="docutils literal"><span class="pre">GrpcService</span></code><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Once you&#8217;ve finished the implementation of the service, you need to build a <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/grpc/GrpcService.html">GrpcService</a> using
+a <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/grpc/GrpcServiceBuilder.html">GrpcServiceBuilder</a> and add it to the <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/ServerBuilder.html">ServerBuilder</a>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="o">...</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">serviceUnder</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">,</span>
+                <span class="k">new</span> <span class="n">GrpcServiceBuilder</span><span class="o">().</span><span class="na">addService</span><span class="o">(</span><span class="k">new</span> <span class="n">MyHelloService</span><span class="o">())</span>
+                                        <span class="o">.</span><span class="na">build</span><span class="o">());</span>
+<span class="o">...</span>
+<span class="n">Server</span> <span class="n">server</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>Note that we bound the <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/grpc/GrpcService.html">GrpcService</a> under <code class="docutils literal"><span class="pre">/</span></code>, which is the catch-all path mapping. This is required for
+compatibility with the official gRPC client. If you are going to add non-gRPC services as well, make sure
+they are added <em>before</em> the <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/grpc/GrpcService.html">GrpcService</a> so that it does not take precedence.</p>
+</div>
+<div class="section" id="id2">
+<h2><code class="docutils literal"><span class="pre">gRPC-Web</span></code><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/grpc/GrpcService.html">GrpcService</a> suppors the <a class="reference external" href="https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-WEB.md">gRPC-Web</a> protocol, a small modification to the <a class="reference external" href="http://www.grpc.io/">gRPC</a> wire format that can be used from
+a browser. To enable it for a <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/grpc/GrpcService.html">GrpcService</a>, add the web formats from <a class="reference external" href="https://github.com/line/armeria/blob/master/grpc/src/main/java/com/linecorp/armeria/common/grpc/GrpcSerializationFormats.java">GrpcSerializationFormats</a> to the
+<a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/grpc/GrpcServiceBuilder.html">GrpcServiceBuilder</a>. It is usually convenient to just pass <a class="reference external" href="https://github.com/line/armeria/blob/master/grpc/src/main/java/com/linecorp/armeria/common/grpc/GrpcSerializationFormats.java">GrpcSerializationFormats</a>.values().</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="o">...</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">serviceUnder</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">,</span>
+                <span class="k">new</span> <span class="n">GrpcServiceBuilder</span><span class="o">().</span><span class="na">addService</span><span class="o">(</span><span class="k">new</span> <span class="n">MyHelloService</span><span class="o">())</span>
+                                        <span class="o">.</span><span class="na">supportedSerializationFormats</span><span class="o">(</span><span class="n">GrpcSerializationFormats</span><span class="o">.</span><span class="na">values</span><span class="o">())</span>
+                                        <span class="o">.</span><span class="na">build</span><span class="o">());</span>
+<span class="o">...</span>
+<span class="n">Server</span> <span class="n">server</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>The server will support both native <a class="reference external" href="http://www.grpc.io/">gRPC</a> and <a class="reference external" href="https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-WEB.md">gRPC-Web</a> from the same endpoint. Use the unofficial
+<a class="reference external" href="https://github.com/improbable-eng/grpc-web">gRPC-Web-Client</a> to access the service from a browser. <a class="reference external" href="https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-WEB.md">gRPC-Web</a> does not support RPC methods with streaming
+requests.</p>
+</div>
+<div class="section" id="unframed-requests">
+<h2>Unframed requests<a class="headerlink" href="#unframed-requests" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/grpc/GrpcService.html">GrpcService</a> supports serving unary RPC methods (no streaming request or response) without <a class="reference external" href="http://www.grpc.io/">gRPC</a> wire format
+framing. This can be useful for gradually migrating an existing HTTP POST based API to <a class="reference external" href="http://www.grpc.io/">gRPC</a>. As <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/grpc/GrpcService.html">GrpcService</a>
+supports both binary protobuf and <a class="reference external" href="https://developers.google.com/protocol-buffers/docs/proto3#json">Protobuf-JSON</a>, either legacy protobuf or JSON APIs can be used.</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="o">...</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">serviceUnder</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">,</span>
+                <span class="k">new</span> <span class="n">GrpcServiceBuilder</span><span class="o">().</span><span class="na">addService</span><span class="o">(</span><span class="k">new</span> <span class="n">MyHelloService</span><span class="o">())</span>
+                                        <span class="o">.</span><span class="na">enableUnframedRequests</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+                                        <span class="o">.</span><span class="na">build</span><span class="o">());</span>
+<span class="o">...</span>
+<span class="n">Server</span> <span class="n">server</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>This service&#8217;s unary methods can be accessed from any HTTP client at e.g., URL <code class="docutils literal"><span class="pre">/grpc.hello.HelloService/Hello</span></code>
+with Content-Type <code class="docutils literal"><span class="pre">application/protobuf</span></code> for binary protobuf POST body or <code class="docutils literal"><span class="pre">application/json</span></code> for JSON POST
+body.</p>
+</div>
+<div class="section" id="blocking-service-implementation">
+<h2>Blocking service implementation<a class="headerlink" href="#blocking-service-implementation" title="Permalink to this headline">¶</a></h2>
+<p>Unlike upstream gRPC-java, Armeria does not run service logic in a separate threadpool. If your service
+implementation requires blocking, either run the individual blocking logic in a threadpool, or just wrap the
+entire service implementation in <code class="docutils literal"><span class="pre">RequestContext.current().blockingTaskExecutor().submit</span></code></p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyHelloService</span> <span class="kd">extends</span> <span class="n">HelloServiceGrpc</span><span class="o">.</span><span class="na">HelloServiceImplBase</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">hello</span><span class="o">(</span><span class="n">HelloRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">StreamObserver</span><span class="o">&lt;</span><span class="n">HelloReply</span><span class="o">&gt;</span> <span class="n">responseObserver</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">ServiceRequestContext</span> <span class="n">ctx</span> <span class="o">=</span> <span class="o">(</span><span class="n">ServiceRequestContext</span><span class="o">)</span> <span class="n">RequestContext</span><span class="o">.</span><span class="na">current</span><span class="o">();</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="na">blockingTaskExecutor</span><span class="o">().</span><span class="na">submit</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
+            <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">10000</span><span class="o">);</span>
+            <span class="n">HelloReply</span> <span class="n">reply</span> <span class="o">=</span> <span class="n">HelloReply</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+                                         <span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">&quot;Hello, &quot;</span> <span class="o">+</span> <span class="n">req</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="sc">&#39;!&#39;</span><span class="o">)</span>
+                                         <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+            <span class="n">responseObserver</span><span class="o">.</span><span class="na">onNext</span><span class="o">(</span><span class="n">reply</span><span class="o">);</span>
+            <span class="n">responseObserver</span><span class="o">.</span><span class="na">onCompleted</span><span class="o">();</span>
+        <span class="o">});</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="client-grpc.html#client-grpc"><span class="std std-ref">Calling a gRPC service</span></a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="server-thrift.html" class="btn btn-neutral float-right" title="Running a Thrift service" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="server-decorator.html" class="btn btn-neutral" title="Decorating a service" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, LINE Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.50.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+  <div class="github-fork-ribbon-wrapper right">
+    <div class="github-fork-ribbon">
+      <a href="https://github.com/line/armeria">Fork me at GitHub</a>
+    </div>
+  </div>
+  <script type="text/javascript" src="_static/add_badges.js"></script>
+   
+
+
+</body>
+</html>

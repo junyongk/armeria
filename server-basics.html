@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Server basics &mdash; Armeria 0.50.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Armeria 0.50.0 documentation" href="index.html"/>
+        <link rel="up" title="Writing a server" href="server.html"/>
+        <link rel="next" title="Decorating a service" href="server-decorator.html"/>
+        <link rel="prev" title="Writing a server" href="server.html"/>
+  <script src="_static/center_page.js"></script>
+   
+
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/armeria.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.50
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setting up a project</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="server.html">Writing a server</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Server basics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ports">Ports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#services">Services</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ssl-tls">SSL/TLS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#virtual-hosts">Virtual hosts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="server-decorator.html">Decorating a service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-grpc.html">Running a gRPC service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-thrift.html">Running a Thrift service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-docservice.html">Browsing and invoking services with <code class="docutils literal"><span class="pre">DocService</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-rest.html">Running a REST service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-http-file.html">Serving static files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-servlet.html">Embedding a servlet container</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Writing a client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/releases">Release notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="apidocs/index.html#://">API documentation</a></li>
+<li class="toctree-l1"><a class="reference external" href="xref/index.html#://">Source cross-reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/issues?q=label%3Aquestion-answered">Questions and answers</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria">Fork me at GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/blob/master/CONTRIBUTING.md">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Armeria</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="server.html">Writing a server</a> &raquo;</li>
+        
+      <li>Server basics</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/line/armeria/blob/master/site/src/sphinx/server-basics.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="server-basics">
+<span id="id1"></span><h1>Server basics<a class="headerlink" href="#server-basics" title="Permalink to this headline">¶</a></h1>
+<p>To start a server, you need to build it first. Use <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/ServerBuilder.html">ServerBuilder</a>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.Server</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.ServerBuilder</span><span class="o">;</span>
+
+<span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="c1">// TODO: Configure your server here.</span>
+<span class="n">Server</span> <span class="n">server</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+</pre></div>
+</div>
+<div class="section" id="ports">
+<h2>Ports<a class="headerlink" href="#ports" title="Permalink to this headline">¶</a></h2>
+<p>To serve anything, you need to specify which TCP/IP port you want to bind onto:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import static</span> <span class="nn">com.linecorp.armeria.common.SessionProtocol.HTTP</span><span class="o">;</span>
+
+<span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="c1">// Configure an HTTP port.</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">port</span><span class="o">(</span><span class="mi">8080</span><span class="o">,</span> <span class="n">HTTP</span><span class="o">);</span>
+<span class="c1">// TODO: Add your services here.</span>
+<span class="n">Server</span> <span class="n">server</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="n">future</span><span class="o">.</span><span class="na">join</span><span class="o">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="services">
+<h2>Services<a class="headerlink" href="#services" title="Permalink to this headline">¶</a></h2>
+<p>Even if we opened a port, it&#8217;s of no use if we didn&#8217;t bind any services to them. Let&#8217;s add some:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpResponseWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpStatus</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.MediaType</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.ServiceRequestContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.AbstractHttpService</span><span class="o">;</span>
+
+<span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">port</span><span class="o">(</span><span class="mi">8080</span><span class="o">,</span> <span class="n">HTTP</span><span class="o">);</span>
+
+<span class="c1">// Add a simple &#39;Hello, world!&#39; service.</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">service</span><span class="o">(</span><span class="s">&quot;/&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">AbstractHttpService</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">ServiceRequestContext</span> <span class="n">ctx</span><span class="o">,</span>
+                         <span class="n">HttpRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpResponseWriter</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">res</span><span class="o">.</span><span class="na">respond</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">,</span> <span class="n">MediaType</span><span class="o">.</span><span class="na">PLAIN_TEXT_UTF_8</span><span class="o">,</span> <span class="s">&quot;Hello, world!&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="c1">// Using path variables:</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">service</span><span class="o">(</span><span class="s">&quot;/greet/{name}&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">AbstractHttpService</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">ServiceRequestContext</span> <span class="n">ctx</span><span class="o">,</span>
+                         <span class="n">HttpRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpResponseWriter</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">pathParam</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">);</span>
+        <span class="n">res</span><span class="o">.</span><span class="na">respond</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">,</span> <span class="n">MediaType</span><span class="o">.</span><span class="na">PLAIN_TEXT_UTF_8</span><span class="o">,</span> <span class="s">&quot;Hello, %s!&quot;</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}.</span><span class="na">decorate</span><span class="o">(</span><span class="n">LoggingService</span><span class="o">.</span><span class="na">newDecorator</span><span class="o">());</span> <span class="c1">// Enable logging</span>
+
+<span class="c1">// Using an annotated service object:</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">annotatedService</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Get</span><span class="o">(</span><span class="s">&quot;/greet2/{name}&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">HttpResponse</span> <span class="nf">greet</span><span class="o">(</span><span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">,</span> <span class="n">MediaType</span><span class="o">.</span><span class="na">PLAIN_TEXT_UTF_8</span><span class="o">,</span> <span class="s">&quot;Hello, %s!&quot;</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="c1">// Just in case your name contains a slash:</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">serviceUnder</span><span class="o">(</span><span class="s">&quot;/greet3&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">AbstractHttpService</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">ServiceRequestContext</span> <span class="n">ctx</span><span class="o">,</span>
+                         <span class="n">HttpRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpResponseWriter</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">path</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">pathWithoutPrefix</span><span class="o">();</span>  <span class="c1">// Get the path without the prefix (&#39;/hello&#39;)</span>
+        <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span> <span class="c1">// Strip the leading slash (&#39;/&#39;)</span>
+        <span class="n">res</span><span class="o">.</span><span class="na">respond</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">,</span> <span class="n">MediaType</span><span class="o">.</span><span class="na">PLAIN_TEXT_UTF_8</span><span class="o">,</span> <span class="s">&quot;Hello, %s!&quot;</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="c1">// Using an annotated service object:</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">annotatedService</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Get</span><span class="o">(</span><span class="s">&quot;regex:^/greet4/(?&lt;name&gt;.*)$&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">HttpResponse</span> <span class="nf">greet</span><span class="o">(</span><span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">,</span> <span class="n">MediaType</span><span class="o">.</span><span class="na">PLAIN_TEXT_UTF_8</span><span class="o">,</span> <span class="s">&quot;Hello, %s!&quot;</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="c1">// Using a query parameter (e.g. /greet5?name=alice) on an annotated service object:</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">annotatedService</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Get</span><span class="o">(</span><span class="s">&quot;/greet5&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">HttpResponse</span> <span class="nf">greet</span><span class="o">(</span><span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">name</span><span class="o">,</span>
+                              <span class="nd">@Param</span><span class="o">(</span><span class="s">&quot;title&quot;</span><span class="o">)</span> <span class="nd">@Optional</span><span class="o">(</span><span class="s">&quot;Mr.&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">title</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// &quot;Mr.&quot; is used by default if there is no title parameter in the request.</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">,</span> <span class="n">MediaType</span><span class="o">.</span><span class="na">PLAIN_TEXT_UTF_8</span><span class="o">,</span> <span class="s">&quot;Hello, %s %s!&quot;</span><span class="o">,</span> <span class="n">title</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="c1">// Getting a map of query parameters on an annotated service object:</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">annotatedService</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Get</span><span class="o">(</span><span class="s">&quot;/greet6&quot;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">HttpResponse</span> <span class="nf">greet</span><span class="o">(</span><span class="n">HttpParameters</span> <span class="n">parameters</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">,</span> <span class="n">MediaType</span><span class="o">.</span><span class="na">PLAIN_TEXT_UTF_8</span><span class="o">,</span> <span class="s">&quot;Hello, %s!&quot;</span><span class="o">,</span>
+                               <span class="n">parameters</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="n">Server</span> <span class="n">server</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span> <span class="n">future</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="n">future</span><span class="o">.</span><span class="na">join</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>As described in the example, <code class="docutils literal"><span class="pre">service()</span></code> and <code class="docutils literal"><span class="pre">serviceUnder()</span></code> perform an exact match and a prefix match
+on a request path respectively. <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/ServerBuilder.html">ServerBuilder</a> also provides advanced path mapping such as regex and glob
+pattern matching.</p>
+<p>Also, we decorated the second service using <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/logging/LoggingService.html">LoggingService</a>, which logs all requests and responses. You might
+be interested in decorating a service using other decorators, for example to gather metrics.</p>
+<p>You can also use an arbitrary object that&#8217;s annotated by the <code class="docutils literal"><span class="pre">&#64;Path</span></code> annotation using <code class="docutils literal"><span class="pre">annotatedService()</span></code>.</p>
+</div>
+<div class="section" id="ssl-tls">
+<h2>SSL/TLS<a class="headerlink" href="#ssl-tls" title="Permalink to this headline">¶</a></h2>
+<p>You can also add an HTTPS port with your certificate and its private key files:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import static</span> <span class="nn">com.linecorp.armeria.common.SessionProtocol.HTTPS</span><span class="o">;</span>
+
+<span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">port</span><span class="o">(</span><span class="mi">8443</span><span class="o">,</span> <span class="n">HTTPS</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">sslContext</span><span class="o">(</span><span class="n">HTTPS</span><span class="o">,</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;certificate.crt&quot;</span><span class="o">),</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s">&quot;private.key&quot;</span><span class="o">),</span> <span class="s">&quot;myPassphrase&quot;</span><span class="o">);</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="virtual-hosts">
+<h2>Virtual hosts<a class="headerlink" href="#virtual-hosts" title="Permalink to this headline">¶</a></h2>
+<p>Use <code class="docutils literal"><span class="pre">ServerBuilder.withVirtualHost()</span></code> to configure <a class="reference external" href="https://en.wikipedia.org/wiki/Virtual_hosting#Name-based">a name-based virtual host</a>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.VirtualHost</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.VirtualHostBuilder</span><span class="o">;</span>
+
+<span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="c1">// Configure foo.com.</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">withVirtualHost</span><span class="o">(</span><span class="s">&quot;foo.com&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">service</span><span class="o">(...)</span>
+  <span class="o">.</span><span class="na">sslContext</span><span class="o">(...)</span>
+  <span class="o">.</span><span class="na">and</span><span class="o">()</span> <span class="c1">// Configure *.bar.com.</span>
+  <span class="o">.</span><span class="na">withVirtualHost</span><span class="o">(</span><span class="s">&quot;*.bar.com&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">service</span><span class="o">(...)</span>
+  <span class="o">.</span><span class="na">sslContext</span><span class="o">(...)</span>
+  <span class="o">.</span><span class="na">and</span><span class="o">()</span> <span class="c1">// Configure the default virtual host.</span>
+  <span class="o">.</span><span class="na">service</span><span class="o">(...)</span>
+  <span class="o">.</span><span class="na">sslContext</span><span class="o">(...);</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="server-decorator.html#server-decorator"><span class="std std-ref">Decorating a service</span></a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="server-decorator.html" class="btn btn-neutral float-right" title="Decorating a service" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="server.html" class="btn btn-neutral" title="Writing a server" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, LINE Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.50.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+  <div class="github-fork-ribbon-wrapper right">
+    <div class="github-fork-ribbon">
+      <a href="https://github.com/line/armeria">Fork me at GitHub</a>
+    </div>
+  </div>
+  <script type="text/javascript" src="_static/add_badges.js"></script>
+   
+
+
+</body>
+</html>

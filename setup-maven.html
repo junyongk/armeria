@@ -1,0 +1,353 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Setting up a project with Maven &mdash; Armeria 0.50.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Armeria 0.50.0 documentation" href="index.html"/>
+        <link rel="up" title="Setting up a project" href="setup.html"/>
+        <link rel="next" title="Writing a server" href="server.html"/>
+        <link rel="prev" title="Setting up a project with Gradle" href="setup-gradle.html"/>
+  <script src="_static/center_page.js"></script>
+   
+
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/armeria.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.50
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="setup.html">Setting up a project</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="setup-gradle.html">Setting up a project with Gradle</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting up a project with Maven</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Writing a server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Writing a client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/releases">Release notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="apidocs/index.html#://">API documentation</a></li>
+<li class="toctree-l1"><a class="reference external" href="xref/index.html#://">Source cross-reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/issues?q=label%3Aquestion-answered">Questions and answers</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria">Fork me at GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/blob/master/CONTRIBUTING.md">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Armeria</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="setup.html">Setting up a project</a> &raquo;</li>
+        
+      <li>Setting up a project with Maven</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/line/armeria/blob/master/site/src/sphinx/setup-maven.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="setting-up-a-project-with-maven">
+<span id="setup-maven"></span><h1>Setting up a project with Maven<a class="headerlink" href="#setting-up-a-project-with-maven" title="Permalink to this headline">¶</a></h1>
+<p>Armeria is distributed via <a class="reference external" href="http://search.maven.org/">Maven Central Repository</a>. Add the following dependency to your <code class="docutils literal"><span class="pre">pom.xml</span></code>:</p>
+<pre class="literal-block">
+&lt;project&gt;
+  ...
+  &lt;properties&gt;
+    &lt;!-- Compiler options --&gt;
+    &lt;maven.compiler.compilerVersion&gt;1.8&lt;/maven.compiler.compilerVersion&gt;
+    &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+    &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+
+    &lt;!-- Dependency versions --&gt;
+    &lt;armeria.version&gt;0.50.0&lt;/armeria.version&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencies&gt;
+    ...
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria-grpc&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria-jetty&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria-kafka&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria-logback&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria-retrofit2&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria-thrift&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria-tomcat&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria-zipkin&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.linecorp.armeria&lt;/groupId&gt;
+      &lt;artifactId&gt;armeria-zookeeper&lt;/artifactId&gt;
+      &lt;version&gt;${armeria.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- Logging --&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+      &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
+      &lt;version&gt;1.2.3&lt;/version&gt;
+      &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+      &lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;
+      &lt;version&gt;1.7.25&lt;/version&gt;
+      &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+    ...
+  &lt;/dependencies&gt;
+  ...
+&lt;/project&gt;
+</pre>
+<p>You may not need all Armeria modules depending on your use case. Please remove unused ones.</p>
+<p>Armeria also provides its artifacts as a shaded JAR so that it can coexist with other components
+better. The following is the list of the shaded dependencies:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/spotify/completable-futures">completable-futures</a></li>
+<li><a class="reference external" href="http://fastutil.di.unimi.it/">fastutil</a></li>
+<li><a class="reference external" href="https://github.com/google/guava">Guava</a></li>
+<li><a class="reference external" href="https://github.com/ronmamo/reflections">Reflections</a></li>
+</ul>
+<p>Please append the <code class="docutils literal"><span class="pre">-shaded</span></code> suffix to the artifact ID to use the shaded dependencies.
+e.g. <code class="docutils literal"><span class="pre">armeria</span></code> to <code class="docutils literal"><span class="pre">armeria-shaded</span></code> and <code class="docutils literal"><span class="pre">armeria-thrift</span></code> to <code class="docutils literal"><span class="pre">armeria-thrift-shaded</span></code></p>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="server.html" class="btn btn-neutral float-right" title="Writing a server" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="setup-gradle.html" class="btn btn-neutral" title="Setting up a project with Gradle" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, LINE Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.50.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+  <div class="github-fork-ribbon-wrapper right">
+    <div class="github-fork-ribbon">
+      <a href="https://github.com/line/armeria">Fork me at GitHub</a>
+    </div>
+  </div>
+  <script type="text/javascript" src="_static/add_badges.js"></script>
+   
+
+
+</body>
+</html>

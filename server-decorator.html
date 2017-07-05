@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Decorating a service &mdash; Armeria 0.50.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="stylesheet" href="_static/overrides.css" type="text/css" />
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Armeria 0.50.0 documentation" href="index.html"/>
+        <link rel="up" title="Writing a server" href="server.html"/>
+        <link rel="next" title="Running a gRPC service" href="server-grpc.html"/>
+        <link rel="prev" title="Server basics" href="server-basics.html"/>
+  <script src="_static/center_page.js"></script>
+   
+
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/armeria.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.50
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Setting up a project</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="server.html">Writing a server</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="server-basics.html">Server basics</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Decorating a service</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#implementing-decoratingservicefunction">Implementing DecoratingServiceFunction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extending-simpledecoratingservice">Extending SimpleDecoratingService</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#extending-decoratingservice">Extending DecoratingService</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unwrapping-decoration">Unwrapping decoration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="server-grpc.html">Running a gRPC service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-thrift.html">Running a Thrift service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-docservice.html">Browsing and invoking services with <code class="docutils literal"><span class="pre">DocService</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-rest.html">Running a REST service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-http-file.html">Serving static files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server-servlet.html">Embedding a servlet container</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Writing a client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced topics</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/releases">Release notes</a></li>
+<li class="toctree-l1"><a class="reference external" href="apidocs/index.html#://">API documentation</a></li>
+<li class="toctree-l1"><a class="reference external" href="xref/index.html#://">Source cross-reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/issues?q=label%3Aquestion-answered">Questions and answers</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria">Fork me at GitHub</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/line/armeria/blob/master/CONTRIBUTING.md">Contributing</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Armeria</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="server.html">Writing a server</a> &raquo;</li>
+        
+      <li>Decorating a service</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/line/armeria/blob/master/site/src/sphinx/server-decorator.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="decorating-a-service">
+<span id="server-decorator"></span><h1>Decorating a service<a class="headerlink" href="#decorating-a-service" title="Permalink to this headline">¶</a></h1>
+<p>A &#8216;decorating service&#8217; (or a &#8216;decorator&#8217;) is a <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/Service.html">Service</a> that wraps another <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/Service.html">Service</a> to intercept an incoming
+request or an outgoing response. As its name says, it is an implementation of <a class="reference external" href="https://en.wikipedia.org/wiki/Decorator_pattern">the decorator pattern</a>.
+Service decoration takes a crucial role in Armeria. A lot of core features such as logging, metrics and
+distributed tracing are implemented as decorators and you will also find it useful when <a class="reference external" href="https://en.wikipedia.org/wiki/Separation_of_concerns">separating concerns</a>.</p>
+<p>There are basically three ways to write a decorating service:</p>
+<ul class="simple">
+<li>Implementing <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/DecoratingServiceFunction.html">DecoratingServiceFunction</a></li>
+<li>Extending <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/SimpleDecoratingService.html">SimpleDecoratingService</a></li>
+<li>Extending <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/DecoratingService.html">DecoratingService</a></li>
+</ul>
+<div class="section" id="implementing-decoratingservicefunction">
+<h2>Implementing <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/DecoratingServiceFunction.html">DecoratingServiceFunction</a><a class="headerlink" href="#implementing-decoratingservicefunction" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/DecoratingServiceFunction.html">DecoratingServiceFunction</a> is a functional interface that greatly simplifies the implementation of a decorating
+service. It enables you to write a decorating service with a single lambda expression:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.common.HttpStatus</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.linecorp.armeria.server.HttpService</span><span class="o">;</span>
+
+<span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="n">HttpService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">...;</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">serviceUnder</span><span class="o">(</span><span class="s">&quot;/web&quot;</span><span class="o">,</span>
+                <span class="n">service</span><span class="o">.</span><span class="na">decorate</span><span class="o">((</span><span class="n">delegate</span><span class="o">,</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">req</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+                    <span class="k">if</span> <span class="o">(!</span><span class="n">authenticate</span><span class="o">(</span><span class="n">req</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="c1">// Authentication failed; fail the request.</span>
+                        <span class="k">return</span> <span class="n">HttpResponse</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">UNAUTHORIZED</span><span class="o">);</span>
+                    <span class="o">}</span>
+
+                    <span class="c1">// Authenticated; pass the request to the actual service.</span>
+                    <span class="k">return</span> <span class="n">delegate</span><span class="o">.</span><span class="na">serve</span><span class="o">(</span><span class="n">ctx</span><span class="o">,</span> <span class="n">req</span><span class="o">);</span>
+                <span class="o">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="extending-simpledecoratingservice">
+<h2>Extending <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/SimpleDecoratingService.html">SimpleDecoratingService</a><a class="headerlink" href="#extending-simpledecoratingservice" title="Permalink to this headline">¶</a></h2>
+<p>If your decorator is expected to be reusable, it is recommended to define a new top-level class that extends
+<a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/SimpleDecoratingService.html">SimpleDecoratingService</a> :</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AuthService</span> <span class="kd">extends</span> <span class="n">SimpleDecoratingService</span><span class="o">&lt;</span><span class="n">HttpRequest</span><span class="o">,</span> <span class="n">HttpResponse</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">AuthService</span><span class="o">(</span><span class="n">Service</span><span class="o">&lt;</span><span class="n">HttpRequest</span><span class="o">,</span> <span class="n">HttpResponse</span><span class="o">&gt;</span> <span class="n">delegate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">delegate</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">HttpResponse</span> <span class="nf">serve</span><span class="o">(</span><span class="n">ServiceRequestContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">HttpRequest</span> <span class="n">req</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(!</span><span class="n">authenticate</span><span class="o">(</span><span class="n">req</span><span class="o">))</span> <span class="o">{</span>
+            <span class="c1">// Authentication failed; fail the request.</span>
+            <span class="k">return</span> <span class="n">HttpResponse</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">HttpStatus</span><span class="o">.</span><span class="na">UNAUTHORIZED</span><span class="o">);</span>
+
+        <span class="o">}</span>
+
+        <span class="n">Service</span><span class="o">&lt;</span><span class="n">HttpRequest</span><span class="o">,</span> <span class="n">HttpResponse</span><span class="o">&gt;</span> <span class="n">delegate</span> <span class="o">=</span> <span class="n">delegate</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">delegate</span><span class="o">.</span><span class="na">serve</span><span class="o">(</span><span class="n">ctx</span><span class="o">,</span> <span class="n">req</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">ServerBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerBuilder</span><span class="o">();</span>
+<span class="c1">// Using a lambda expression:</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">serviceUnder</span><span class="o">(</span><span class="s">&quot;/web&quot;</span><span class="o">,</span> <span class="n">service</span><span class="o">.</span><span class="na">decorate</span><span class="o">(</span><span class="n">delegate</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">AuthService</span><span class="o">(</span><span class="n">delegate</span><span class="o">)));</span>
+<span class="c1">// Using reflection:</span>
+<span class="n">sb</span><span class="o">.</span><span class="na">serviceUnder</span><span class="o">(</span><span class="s">&quot;/web&quot;</span><span class="o">,</span> <span class="n">service</span><span class="o">.</span><span class="na">decorate</span><span class="o">(</span><span class="n">AuthService</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="extending-decoratingservice">
+<h2>Extending <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/DecoratingService.html">DecoratingService</a><a class="headerlink" href="#extending-decoratingservice" title="Permalink to this headline">¶</a></h2>
+<p>So far, we only demonstrated the case where a decorating service does not transform the type of the request and
+response. You can do that as well, of course, using <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/DecoratingService.html">DecoratingService</a>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="c1">// Transforms a Service&lt;RpcRequest, RpcResponse&gt; into Service&lt;HttpRequest, HttpResponse&gt;.</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyRpcService</span> <span class="kd">extends</span> <span class="n">DecoratingService</span><span class="o">&lt;</span><span class="n">RpcRequest</span><span class="o">,</span> <span class="n">RpcResponse</span><span class="o">,</span>
+                                                    <span class="n">HttpRequest</span><span class="o">,</span> <span class="n">HttpResponse</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nf">MyRpcService</span><span class="o">(</span><span class="n">Service</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">RpcRequest</span><span class="o">,</span> <span class="o">?</span> <span class="kd">extends</span> <span class="n">RpcResponse</span><span class="o">&gt;</span> <span class="n">delegate</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">delegate</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">HttpResponse</span> <span class="nf">serve</span><span class="o">(</span><span class="n">ServiceRequestContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="n">HttpRequest</span> <span class="n">req</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="c1">// This method has been greatly simplified for easier understanding.</span>
+        <span class="c1">// In reality, we will have to do this asynchronously.</span>
+        <span class="n">RpcRequest</span> <span class="n">rpcReq</span> <span class="o">=</span> <span class="n">convertToRpcRequest</span><span class="o">(</span><span class="n">req</span><span class="o">);</span>
+        <span class="n">RpcResponse</span> <span class="n">rpcRes</span> <span class="o">=</span> <span class="n">delegate</span><span class="o">().</span><span class="na">serve</span><span class="o">(</span><span class="n">ctx</span><span class="o">,</span> <span class="n">rpcReq</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">convertToHttpResponse</span><span class="o">(</span><span class="n">rpcRes</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="n">RpcRequest</span> <span class="nf">convertToRpcRequest</span><span class="o">(</span><span class="n">HttpRequest</span> <span class="n">req</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+    <span class="kd">private</span> <span class="n">HttpResponse</span> <span class="nf">convertToHttpResponse</span><span class="o">(</span><span class="n">RpcResponse</span> <span class="n">res</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="unwrapping-decoration">
+<h2>Unwrapping decoration<a class="headerlink" href="#unwrapping-decoration" title="Permalink to this headline">¶</a></h2>
+<p>Once a <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/Service.html">Service</a> is decorated, the type of the service is not that of the original <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/Service.html">Service</a> anymore.
+Therefore, you cannot simply down-cast it to access the method exposed by the original <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/Service.html">Service</a>.
+Instead, you need to &#8216;unwrap&#8217; the decorator using the <code class="docutils literal"><span class="pre">Service.as()</span></code> method:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">MyService</span> <span class="n">service</span> <span class="o">=</span> <span class="o">...;</span>
+<span class="n">MyDecoratedService</span> <span class="n">decoratedService</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="na">decorate</span><span class="o">(...);</span>
+
+<span class="k">assert</span> <span class="o">!(</span><span class="n">decoratedService</span> <span class="k">instanceof</span> <span class="n">MyService</span><span class="o">);</span>
+<span class="k">assert</span> <span class="n">decoratedService</span><span class="o">.</span><span class="na">as</span><span class="o">(</span><span class="n">MyService</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">get</span><span class="o">()</span> <span class="o">==</span> <span class="n">service</span><span class="o">;</span>
+<span class="k">assert</span> <span class="n">decoratedService</span><span class="o">.</span><span class="na">as</span><span class="o">(</span><span class="n">MyDecoratedService</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">get</span><span class="o">()</span> <span class="o">==</span> <span class="n">decoratedService</span><span class="o">;</span>
+<span class="k">assert</span> <span class="o">!</span><span class="n">decoratedService</span><span class="o">.</span><span class="na">as</span><span class="o">(</span><span class="n">SomeOtherService</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">isPresent</span><span class="o">();</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">as()</span></code> is especially useful when you are looking for the <a class="reference external" href="apidocs/index.html?com/linecorp/armeria/server/Service.html">Service</a> instances that implements a certain type
+from a server:</p>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Server</span> <span class="n">server</span> <span class="o">=</span> <span class="o">...;</span>
+<span class="n">ServerConfig</span> <span class="n">serverConfig</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="na">config</span><span class="o">();</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">ServiceConfig</span><span class="o">&gt;</span> <span class="n">serviceConfigs</span> <span class="o">=</span> <span class="n">serverConfig</span><span class="o">.</span><span class="na">serviceConfigs</span><span class="o">();</span>
+<span class="k">for</span> <span class="o">(</span><span class="n">ServiceConfig</span> <span class="n">sc</span> <span class="o">:</span> <span class="n">serviceConfigs</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">sc</span><span class="o">.</span><span class="na">service</span><span class="o">().</span><span class="na">as</span><span class="o">(</span><span class="n">SomeType</span><span class="o">.</span><span class="na">class</span><span class="o">).</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span>
+        <span class="c1">// Handle the service who implements or extends SomeType.</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="client-decorator.html#client-decorator"><span class="std std-ref">Decorating a client</span></a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="server-grpc.html" class="btn btn-neutral float-right" title="Running a gRPC service" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="server-basics.html" class="btn btn-neutral" title="Server basics" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015-2017, LINE Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.50.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+  <div class="github-fork-ribbon-wrapper right">
+    <div class="github-fork-ribbon">
+      <a href="https://github.com/line/armeria">Fork me at GitHub</a>
+    </div>
+  </div>
+  <script type="text/javascript" src="_static/add_badges.js"></script>
+   
+
+
+</body>
+</html>
