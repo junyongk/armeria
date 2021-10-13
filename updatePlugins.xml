@@ -9,7 +9,7 @@
     url - path to download the plugin JAR/ZIP file. Required. Must be HTTPS
     version - version of this plugin. Required. Must match <version> in plugin.xml
   -->
-  <plugin id="org.naver.toothless.intellij_plugin" url="https://github.com/junyongk/armeria/blob/master/toothless_intelli_plugin-1.0.0.zip" crossorigin="anonymous" version="1.0.0">
+  <plugin id="org.naver.toothless.intellij_plugin" url="https://github.com/junyongk/armeria/blob/master/toothless_intelli_plugin-1.0.0.zip" version="1.0.0" crossorigin="anonymous">
     <!--
       The <idea-version> element must match the same element in plugin.xml. Required.
     -->
